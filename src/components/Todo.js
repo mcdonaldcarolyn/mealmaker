@@ -1,4 +1,7 @@
 import React from "react";
+import { connect } from "react-redux";
+import { createGoalAction } from "../store/actions/createGoal";
+
 class Todo extends React.Component {
   state = {
     goal: ""
@@ -6,7 +9,7 @@ class Todo extends React.Component {
   getGoal = e => {
     e.preventDefault();
     if (this.state.goal !== "") {
-      this.props.addAGoal(this.state);
+      this.props.createGoal(this.state);
       this.setState({ goal: "" });
     }
   };
@@ -38,4 +41,9 @@ class Todo extends React.Component {
     );
   }
 }
-export default Todo;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    createGoal: (goal) => { dispatch(createGoalAction(goal))}
+  }
+}
+export default connect(null, mapDispatchToProps)(Todo);

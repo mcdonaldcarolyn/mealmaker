@@ -1,6 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-const Goals = ({ goals }) => {
+import { connect } from 'react-redux';
+
+
+const Goals = (props) => {
+  console.log(props)
+  let goals = props.goal
   let goal;
   goals.length === 0
     ? (goal = <h5>You haven't set a goal</h5>)
@@ -23,4 +28,10 @@ const Goals = ({ goals }) => {
     </div>
   );
 };
-export default Goals;
+const mapStateToProps = state => {
+  return {
+    goal: state.goals
+  }
+}
+  
+export default connect(mapStateToProps)(Goals);
