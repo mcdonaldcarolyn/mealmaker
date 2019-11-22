@@ -1,43 +1,37 @@
 import React from "react";
 import { connect } from "react-redux";
 import { createGoalAction } from "../store/actions/createGoal";
+import Form from './from';
 
 class Todo extends React.Component {
   state = {
     goal: ""
   };
+  
   getGoal = e => {
     e.preventDefault();
-    if (this.state.goal !== "") {
-      this.props.createGoal(this.state);
-      this.setState({ goal: "" });
-    }
-  };
+    this.props.createGoal(this.state)
+    this.setState({ goal: '' })
+  }
+  handleChange = value => {
+     this.setState({ goal: value })
+   }
+    
+
   render() {
     return (
       <div>
         <div className="row">
-          <form
-            className="col s12"
-            style={{ marginTop: "70px" }}
-            onSubmit={this.getGoal}
-          >
-            <input
-              type="text"
-              onChange={e => {
-                this.setState({ goal: e.target.value });
-              }}
-              value={this.state.goal}
-              required
-            />
-            <div className="center">
-              <button className="btn btn-large blue" onClick={this.getGoal}>
-                Add Goal
-              </button>
-            </div>
-          </form>
+          <Form
+            formAction={this.getGoal}
+            value={this.state.goal}
+            handleChange={this.handleChange}
+            btnName={`Add Button`}
+          />
+          </div>
         </div>
-      </div>
+            
+            
     );
   }
 }

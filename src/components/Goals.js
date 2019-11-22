@@ -1,37 +1,59 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
+import { firestoreConnect } from 'react-redux-firebase';
+import { compose } from 'redux';
+import { deleteGoal, getAGoal } from '../store/actions/createGoal';
 
 
 const Goals = (props) => {
   console.log(props)
-  let goals = props.goal
-  let goal;
-  goals.length === 0
-    ? (goal = <h5>You haven't set a goal</h5>)
-    : (goal = goals.map(g => {
-        return (
-          <li className="collection-item" key={g.id}>
-            {g.goal}
-            <Link className="secondary-content" to="/">
-              <i className="material-icons">edit</i>
-            </Link>
-            <Link className="secondary-content" to="/">
-              <i className="material-icons">delete</i>
-            </Link>
-          </li>
-        );
-      }));
+  const { goal, deleteGoal, getAGoal } = props
+  let styling;
+  let goals;
+
+  if (goal) {
+    styling = "collection"
+    goals = (goal.map(g => {
+      return (
+        <li className="collection-item" key={g.id} >
+          {g.goal}
+          <Link className='secondary-content' to='/' onCLick={() => deleteGoal(g.id)}>
+            <i className='material-icons delete'>delete</i>
+          </Link>
+          <Link className='secondary-content' to={'${g.id}'}>
+            <i className='material-icons edit'>edit</i>
+          </Link>
+        </li>
+      )
+    })
+    )
+  } else {
+    goals = <h4 style={{ textAlign: 'center' }}>Loading...</h4>
+    styling = ''
+  }
   return (
     <div>
-      <ul className="collection">{goal}</ul>
+      <ul className={'${styling}'} style={{ marginTop: '70px' }}>
+        {goals}
+      </ul>
     </div>
-  );
-};
-const mapStateToProps = state => {
+  )
+}
+const mapDispatchToProps = (dispatch) => {
   return {
-    goal: state.goals
+    deleteGoal: (id) => { dispatch(deleteGoal(id)) },
+    getAGoal: (id) => { dispatch(getAGoal(id))}
   }
 }
   
-export default connect(mapStateToProps)(Goals);
+const mapStateToProps = state => {
+  console.log(state)
+  return {
+    goal: state.firestoreGoals.ordered.goalz
+  }
+}
+
+  
+export default compose(connect(mapStateToProps, mapDispatchToProps), firestoreConnect([{ collection: 'goalz' }]))
+  (Goals);
